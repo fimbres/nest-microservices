@@ -1,25 +1,39 @@
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { DatabaseModule } from '@app/common';
-import { LoggerModule } from '@app/common/logger';
-import { AUTH_SERVICE, PAYMENTS_SERVICE } from '@app/common/constants';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
-
 import { ReservationsService } from './reservations.service';
 import { ReservationsController } from './reservations.controller';
+import {
+  DatabaseModule,
+  LoggerModule,
+  AUTH_SERVICE,
+  PAYMENTS_SERVICE,
+} from '@app/common';
 import { ReservationsRepository } from './reservations.repository';
-import { ReservationDocument, ReservationSchema } from './models/reservation.schema';
+import {
+  ReservationDocument,
+  ReservationSchema,
+} from './models/reservation.schema';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { GraphQLModule } from '@nestjs/graphql';
+import {
+  ApolloFederationDriver,
+  ApolloFederationDriverConfig,
+} from '@nestjs/apollo';
+import { ReservationsResolver } from './reservations.resolver';
 
 @Module({
   imports: [
-    DatabaseModule, 
+    DatabaseModule,
     DatabaseModule.forFeature([
-      { 
-        name: ReservationDocument.name, 
-        schema: ReservationSchema 
-      }
+      { name: ReservationDocument.name, schema: ReservationSchema },
     ]),
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
+      autoSchemaFile: {
+        federation: 2,
+      },
+    }),
     LoggerModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -32,7 +46,7 @@ import { ReservationDocument, ReservationSchema } from './models/reservation.sch
     ClientsModule.registerAsync([
       {
         name: AUTH_SERVICE,
-        useFactory: (configService: ConfigService) => ({ 
+        useFactory: (configService: ConfigService) => ({
           transport: Transport.TCP,
           options: {
             host: configService.get('AUTH_HOST'),
@@ -43,7 +57,7 @@ import { ReservationDocument, ReservationSchema } from './models/reservation.sch
       },
       {
         name: PAYMENTS_SERVICE,
-        useFactory: (configService: ConfigService) => ({ 
+        useFactory: (configService: ConfigService) => ({
           transport: Transport.TCP,
           options: {
             host: configService.get('PAYMENTS_HOST'),
@@ -51,10 +65,14 @@ import { ReservationDocument, ReservationSchema } from './models/reservation.sch
           }
         }),
         inject: [ConfigService],
-      }
-    ])
+      },
+    ]),
   ],
   controllers: [ReservationsController],
-  providers: [ReservationsService, ReservationsRepository],
+  providers: [
+    ReservationsService,
+    ReservationsRepository,
+    ReservationsResolver,
+  ],
 })
 export class ReservationsModule {}
