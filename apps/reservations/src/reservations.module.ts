@@ -25,6 +25,7 @@ import { ReservationDocument, ReservationSchema } from './models/reservation.sch
       isGlobal: true,
       validationSchema: Joi.object({
         DATABASE_URI: Joi.string().required(),
+        AUTH_HOST: Joi.string().required(),
       })
     }),
     ClientsModule.registerAsync([
