@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
+import { LoggerModule } from '@app/common/logger';
+import { DatabaseModule } from '@app/common';
+
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { DatabaseModule } from '@app/common';
 import { UserDocument, UserSchema } from './models/user.schema';
-import { LoggerModule } from '@app/common/logger';
 import { UsersRepository } from './users.repository';
 
 @Module({
