@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '@app/common';
 import { LoggerModule } from '@app/common/logger';
+import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
 
 import { ReservationsService } from './reservations.service';
 import { ReservationsController } from './reservations.controller';
@@ -16,7 +18,13 @@ import { ReservationDocument, ReservationSchema } from './models/reservation.sch
         schema: ReservationSchema 
       }
     ]),
-    LoggerModule
+    LoggerModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        DATABASE_URI: Joi.string().required(),
+      })
+    })
   ],
   controllers: [ReservationsController],
   providers: [ReservationsService, ReservationsRepository],
