@@ -14,6 +14,9 @@ import { PaymentsService } from './payments.service';
       validationSchema: Joi.object({
         DATABASE_URI: Joi.string().required(),
         AUTH_HOST: Joi.string().required(),
+        PORT: Joi.number().required(),
+        STRIPE_SECRET_KEY: Joi.string().required(),
+        STRIPE_PUBLIC_KEY: Joi.string().required(),
       })
     }),
     // ClientsModule.registerAsync([
