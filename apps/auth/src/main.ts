@@ -15,6 +15,10 @@ async function bootstrap() {
   app.useLogger(app.get(Logger));
   app.connectMicroservice({
     transport: Transport.TCP,
+    options: {
+      host: '0.0.0.0',
+      port: 3002
+    }
   });
   
   await app.startAllMicroservices();
