@@ -1,0 +1,64 @@
+steps:
+  #Reservatons
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t',
+      'path-to-image',
+      '-f',
+      'apps/reservations/Dockerfile',
+      '.'
+    ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      'path-to-image',
+    ]
+
+  #Auth
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t',
+      'path-to-image',
+      '-f',
+      'apps/auth/Dockerfile',
+      '.'
+    ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      'path-to-image',
+    ]
+
+  #Notifications
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t',
+      'path-to-image',
+      '-f',
+      'apps/notifications/Dockerfile',
+      '.'
+    ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      'path-to-image',
+    ]
+
+  #Payments
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t',
+      'path-to-image',
+      '-f',
+      'apps/payments/Dockerfile',
+      '.'
+    ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      'path-to-image',
+    ]
