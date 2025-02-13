@@ -13,6 +13,7 @@ import { NotificationsService } from './notifications.service';
       isGlobal: true,
       validationSchema: Joi.object({
         PORT: Joi.number().required(),
+        RABBITMQ_URI: Joi.string().required(),
       })
     })
   ],
