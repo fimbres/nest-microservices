@@ -18,16 +18,17 @@ import { PaymentsService } from './payments.service';
         NOTIFICATIONS_HOST: Joi.string().required(),
         STRIPE_SECRET_KEY: Joi.string().required(),
         STRIPE_PUBLIC_KEY: Joi.string().required(),
+        RABBITMQ_URI: Joi.string().required(),
       })
     }),
     ClientsModule.registerAsync([
       {
         name: NOTIFICATIONS_SERVICE,
         useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
           options: {
-            host: configService.get('NOTIFICATIONS_HOST'),
-            port: configService.get('NOTIFICATIONS_PORT'),
+            urls: [configService.get('RABBITMQ_URI') as string],
+            queue: 'notifications'
           }
         }),
         inject: [ConfigService],
