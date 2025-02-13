@@ -27,16 +27,17 @@ import { ReservationDocument, ReservationSchema } from './models/reservation.sch
         DATABASE_URI: Joi.string().required(),
         AUTH_HOST: Joi.string().required(),
         PAYMENTS_HOST: Joi.string().required(),
+        RABBITMQ_URI: Joi.string().required(),
       })
     }),
     ClientsModule.registerAsync([
       {
         name: AUTH_SERVICE,
         useFactory: (configService: ConfigService) => ({ 
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
           options: {
-            host: configService.get('AUTH_HOST'),
-            port: 3002
+            urls: [configService.get('RABBITMQ_URI') as string],
+            queue: 'auth'
           }
         }),
         inject: [ConfigService],
@@ -44,10 +45,10 @@ import { ReservationDocument, ReservationSchema } from './models/reservation.sch
       {
         name: PAYMENTS_SERVICE,
         useFactory: (configService: ConfigService) => ({ 
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
           options: {
-            host: configService.get('PAYMENTS_HOST'),
-            port: 3003
+            urls: [configService.get('RABBITMQ_URI') as string],
+            queue: 'payments'
           }
         }),
         inject: [ConfigService],
