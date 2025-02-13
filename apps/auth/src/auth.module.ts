@@ -20,6 +20,7 @@ import { JwtMethod } from './methods/jwt.method';
       validationSchema: Joi.object({
         DATABASE_URI: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
+        RABBITMQ_URI: Joi.string().required(), 
       })
     }),
     JwtModule.registerAsync({

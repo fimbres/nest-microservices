@@ -5,19 +5,21 @@ import * as cookieParser from 'cookie-parser';
 import { Transport } from '@nestjs/microservices';
 
 import { AuthModule } from './auth.module';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
+  const configService = app.get(ConfigService);
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
   }));
   app.useLogger(app.get(Logger));
   app.connectMicroservice({
-    transport: Transport.TCP,
+    transport: Transport.RMQ,
     options: {
-      host: '0.0.0.0',
-      port: 3002
+      urls: [configService.get('RABBITMQ_URI')],
+      queue: 'auth'
     }
   });
   
